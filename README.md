@@ -63,3 +63,7 @@ Built from scratch as a **safe public portfolio reconstruction**, not a copy of 
 
 ### Interpreting the demo
 Insights are generated deterministically from synthetic query results, not by an AI model. Month-to-month comparisons include potentially partial boundary months; they are illustrative and should not be used as business decisions.
+
+## Optional hosting
+
+A `render.yaml` file defines a Render web service and `/api/health` check. Deployment is **not automatic**. The website can become publicly reachable even while the source repository stays private. Use synthetic data only. Check hosting-plan availability before deploying.
