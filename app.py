@@ -91,6 +91,13 @@ def home():
     return FileResponse(ROOT / "static" / "index.html")
 
 
+@app.get("/api/health")
+def health():
+    with connect() as conn:
+        count = conn.execute("SELECT COUNT(*) FROM sales").fetchone()[0]
+    return {"status": "ok", "dataset": "synthetic", "records": count}
+
+
 @app.get("/api/examples")
 def examples():
     return [{"id": k, "question": v} for k, v in EXAMPLES.items()]
