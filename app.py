@@ -46,14 +46,18 @@ QUERIES = {
     "locations": ("Revenue by location", "SELECT location, ROUND(SUM(amount),2) AS revenue FROM sales WHERE state='completed' GROUP BY location ORDER BY revenue DESC"),
     "orders": ("Monthly order volume", "SELECT substr(day,1,7) AS period, COUNT(*) AS orders FROM sales GROUP BY period ORDER BY period"),
     "cancellations": ("Cancellation rate by location", "SELECT location, COUNT(*) AS orders, ROUND(100.0*SUM(CASE WHEN state='cancelled' THEN 1 ELSE 0 END)/COUNT(*),1) AS cancellation_rate FROM sales GROUP BY location ORDER BY cancellation_rate DESC"),
-    "customers": ("Purchasing customers by location", "SELECT location, COUNT(DISTINCT customer_id) AS customers FROM sales WHERE state='completed' GROUP BY location ORDER BY customers DESC")
+    "customers": ("Purchasing customers by location", "SELECT location, COUNT(DISTINCT customer_id) AS customers FROM sales WHERE state='completed' GROUP BY location ORDER BY customers DESC"),
+    "categories": ("Revenue by category", "SELECT category, ROUND(SUM(amount),2) AS revenue FROM sales WHERE state='completed' GROUP BY category ORDER BY revenue DESC"),
+    "aov": ("Average completed order value by location", "SELECT location, ROUND(AVG(amount),2) AS avg_order_value FROM sales WHERE state='completed' GROUP BY location ORDER BY avg_order_value DESC")
 }
 EXAMPLES = {
     "revenue": "Show monthly revenue",
     "locations": "Compare revenue by location",
     "orders": "How many orders per month?",
     "cancellations": "What is the cancellation rate by location?",
-    "customers": "How many unique customers by location?"
+    "customers": "How many unique customers by location?",
+    "categories": "Revenue breakdown by category",
+    "aov": "Average order value by location"
 }
 
 
@@ -61,6 +65,10 @@ def intent(question):
     q = question.lower()
     if re.search(r"\b(select|insert|update|delete|drop|alter|truncate|create|pragma|attach|detach|union)\b", q):
         return None
+    if "average order" in q or "avg order" in q or "aov" in q:
+        return "aov"
+    if "category" in q or "categories" in q:
+        return "categories"
     if any(w in q for w in ["cancel", "отмен"]):
         return "cancellations"
     if any(w in q for w in ["customer", "client", "клиент"]):
@@ -96,6 +104,32 @@ def kpis():
     return {**dict(row), "locations": locations, "synthetic": True}
 
 
+def insight(kind: str, rows: list[dict]) -> str:
+    """Explain simple factual patterns, without an LLM or invented causality."""
+    if not rows:
+        return "No observations in the synthetic dataset."
+    if kind == "revenue":
+        first, last = rows[0], rows[-1]
+        if len(rows) == 1:
+            return f"Only one calendar month is represented: {last['period']}."
+        delta = round(last["revenue"] - first["revenue"], 2)
+        return (f"Revenue in {last['period']} is {last['revenue']:,.2f} USD "
+                f"versus {first['revenue']:,.2f} USD in {first['period']} "
+                f"(difference {delta:+,.2f} USD). Note: edge months may be partial.")
+    if kind == "orders":
+        top = max(rows, key=lambda x: x["orders"])
+        return f"Highest recorded monthly order count: {top['period']} ({top['orders']:,} orders). Edge months may be partial."
+    if kind == "cancellations":
+        top = max(rows, key=lambda x: x["cancellation_rate"])
+        return f"Highest cancellation rate: {top['location']} at {top['cancellation_rate']:.1f}% of recorded orders."
+    metric = {"locations": "revenue", "categories": "revenue", "customers": "customers", "aov": "avg_order_value"}.get(kind)
+    if not metric:
+        return "Synthetic data summary."
+    top = max(rows, key=lambda x: x[metric])
+    label = top.get("location", top.get("category", "Unknown"))
+    return f"Highest {metric.replace('_', ' ')}: {label} ({top[metric]:,.2f}). This is descriptive, not a causal finding."
+
+
 @app.post("/api/chat")
 def chat(request: ChatRequest):
     chosen = intent(request.question)
@@ -104,7 +138,7 @@ def chat(request: ChatRequest):
     title, sql = QUERIES[chosen]
     with connect() as conn:
         rows = [dict(r) for r in conn.execute(sql).fetchall()]
-    return {"answer": f"{title}, using synthetic data. {len(rows)} rows.", "data": rows, "columns": list(rows[0]) if rows else [], "supported": True, "query_type": chosen}
+    return {"answer": f"{title}. {insight(chosen, rows)} Synthetic dataset; {len(rows)} rows.", "data": rows, "columns": list(rows[0]) if rows else [], "supported": True, "query_type": chosen}
 
 
 @app.get("/api/export/{query_type}")
