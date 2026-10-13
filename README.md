@@ -1,6 +1,21 @@
 # InsightFlow — Analytics Assistant Demo
 
+**Live demo:** https://analytics-assistant-demo.onrender.com
+
+A portfolio proof of concept for conversational business analytics: explore synthetic retail KPIs, choose a predefined report, visualize results, and export CSV.
+
+**Tech stack:** Python · FastAPI · SQL · SQLite · HTML/CSS/JavaScript · Docker · GitHub Actions · Render
+
+> **Portfolio scope:** Uses 1,500 synthetic orders across three fictional locations. Keyword-based intent routing and predefined read-only queries — not a generative AI model. No employer code or customer data.
+
 Standalone portfolio analytics web application using **FastAPI, SQLite, HTML/JavaScript**, and a completely synthetic dataset. No employer database structure, credentials, private queries, logos or data.
+
+## What to try
+
+1. Open the **[live application](https://analytics-assistant-demo.onrender.com)** (free hosting may take ~1 minute to wake up).
+2. Select **What is the cancellation rate by location?** to see a labeled percentage chart.
+3. Switch **Chart / Table**, then try **Revenue breakdown by category**.
+4. Use **Export CSV** to download the displayed report.
 
 ## Features
 
@@ -64,6 +79,7 @@ Built from scratch as a **safe public portfolio reconstruction**, not a copy of 
 ### Interpreting the demo
 Insights are generated deterministically from synthetic query results, not by an AI model. Month-to-month comparisons include potentially partial boundary months; they are illustrative and should not be used as business decisions.
 
-## Optional hosting
+## Hosting
 
-A `render.yaml` file defines a Render web service and `/api/health` check. Deployment is **not automatic**. The website can become publicly reachable even while the source repository stays private. Use synthetic data only. Check hosting-plan availability before deploying.
+The live demo is hosted on Render. A `render.yaml` file describes the optional deployment configuration and `/api/health` provides a health check. The free instance may spin down when idle. Publishing the website does not require making the source repository public.
+
