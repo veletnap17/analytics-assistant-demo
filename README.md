@@ -7,7 +7,8 @@ Standalone portfolio analytics web application using **FastAPI, SQLite, HTML/Jav
 - KPI overview across 1,500 synthetic retail orders, three fictional locations
 - English-language analytics questions for monthly revenue, orders, customers, cancellations, and location revenue
 - Safe predefined read-only SQL: user text is **never** executed as SQL
-- Result tables, in-browser charts and CSV export
+- Result tables, in-browser charts with chart/table switcher and CSV export
+- Recent successful questions saved in your browser (localStorage), with a clear-history action; no chat history sent to a server
 - REST API with interactive docs at `/docs`
 - Automated API tests using pytest and GitHub Actions
 
