@@ -104,7 +104,6 @@ def kpis():
     return {**dict(row), "locations": locations, "synthetic": True}
 
 
-@app.post("/api/chat")
 def insight(kind: str, rows: list[dict]) -> str:
     """Explain simple factual patterns, without an LLM or invented causality."""
     if not rows:
@@ -131,6 +130,7 @@ def insight(kind: str, rows: list[dict]) -> str:
     return f"Highest {metric.replace('_', ' ')}: {label} ({top[metric]:,.2f}). This is descriptive, not a causal finding."
 
 
+@app.post("/api/chat")
 def chat(request: ChatRequest):
     chosen = intent(request.question)
     if not chosen:
