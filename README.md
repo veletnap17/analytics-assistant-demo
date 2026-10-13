@@ -4,6 +4,10 @@
 
 A portfolio proof of concept for conversational business analytics: explore synthetic retail KPIs, choose a predefined report, visualize results, and export CSV.
 
+## Dashboard preview
+
+![InsightFlow analytics dashboard showing synthetic KPI overview and cancellation analysis](dashboard.png)
+
 **Tech stack:** Python · FastAPI · SQL · SQLite · HTML/CSS/JavaScript · Docker · GitHub Actions · Render
 
 > **Portfolio scope:** Uses 1,500 synthetic orders across three fictional locations. Keyword-based intent routing and predefined read-only queries — not a generative AI model. No employer code or customer data.
