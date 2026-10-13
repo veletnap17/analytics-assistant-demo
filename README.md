@@ -21,16 +21,29 @@ Standalone portfolio analytics web application using **FastAPI, SQLite, HTML/Jav
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app:app --reload
+python run.py
 ```
 
-Open http://127.0.0.1:8000. Synthetic data is seeded automatically in a local SQLite file. To reset the demo, delete `demo.sqlite3` while the app is stopped.
+Open http://127.0.0.1:8000. The script binds to localhost only; this is a local development entry point.
+
+Alternatively, run with Docker:
+
+```bash
+docker build -t insightflow-demo .
+docker run --rm -p 127.0.0.1:8000:8000 insightflow-demo
+```
+
+The container uses an ephemeral SQLite database, recreated on a fresh container run. Synthetic data is seeded automatically in a local SQLite file. To reset the demo, delete `demo.sqlite3` while the app is stopped.
 
 ## Test
 
 ```bash
-pytest -q
+python -m pytest -q
 ```
+
+## Security and limits
+
+The demo uses entirely generated retail orders and fixed SQL templates; no internal database names, credentials, branded media, or employer integrations are included. Browser history stays in localStorage. User-submitted questions are classified into predefined report types; **it is not an AI model**.
 
 ## API
 
