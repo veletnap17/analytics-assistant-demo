@@ -5,7 +5,8 @@ Standalone portfolio analytics web application using **FastAPI, SQLite, HTML/Jav
 ## Features
 
 - KPI overview across 1,500 synthetic retail orders, three fictional locations
-- English-language analytics questions for monthly revenue, orders, customers, cancellations, and location revenue
+- English-language analytics questions for monthly revenue, orders, customers, cancellations, revenue by location/category, and average order value
+- Data-grounded descriptive insights: highlights, comparisons and caveats derived from query rows, without inventing causes
 - Safe predefined read-only SQL: user text is **never** executed as SQL
 - Result tables, in-browser charts with chart/table switcher and CSV export
 - Recent successful questions saved in your browser (localStorage), with a clear-history action; no chat history sent to a server
@@ -46,3 +47,6 @@ Browser dashboard → FastAPI → strict intent routing → predefined SELECT qu
 ```
 
 Built from scratch as a **safe public portfolio reconstruction**, not a copy of proprietary company code.
+
+### Interpreting the demo
+Insights are generated deterministically from synthetic query results, not by an AI model. Month-to-month comparisons include potentially partial boundary months; they are illustrative and should not be used as business decisions.
